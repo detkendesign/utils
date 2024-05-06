@@ -6,8 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  }, 
+    "test": "vitest"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/detkendesign/utils.git"
@@ -22,9 +22,9 @@
     "url": "https://github.com/detkendesign/utils/issues"
   },
   "homepage": "https://github.com/detkendesign/utils#readme",
-  "dependencies": {},
   "devDependencies": {
+    "ts-node": "^10.x",
     "typescript": "^4.x",
-    "ts-node": "^10.x"
+    "vitest": "^1.6.0"
   }
 }
