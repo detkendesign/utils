@@ -2,10 +2,12 @@
   "name": "@dtkn/utils",
   "version": "0.0.1",
   "description": "TS utils for everyday use.",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  }, 
   "repository": {
     "type": "git",
     "url": "git+https://github.com/detkendesign/utils.git"
@@ -15,8 +17,14 @@
   ],
   "author": "Anton Detken",
   "license": "ISC",
+  "private": false,
   "bugs": {
     "url": "https://github.com/detkendesign/utils/issues"
   },
-  "homepage": "https://github.com/detkendesign/utils#readme"
+  "homepage": "https://github.com/detkendesign/utils#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^4.x",
+    "ts-node": "^10.x"
+  }
 }
