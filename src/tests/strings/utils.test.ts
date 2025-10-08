@@ -1,9 +1,18 @@
 import { expect, it, suite } from "vitest";
-import { pluralize } from "~/lib/strings/utils";
+import { isString, pluralize } from "~/lib/strings/utils";
 
 suite("strings", () => {
   it("initializes suite correctly", () => {
     expect("foo").toHaveLength(3);
+  });
+
+  suite("isString", () => {
+    it("returns true if the value is a string", () => {
+      expect(isString("foo")).toBe(true);
+    });
+    it("returns false if the value is not a string", () => {
+      expect(isString(1)).toBe(false);
+    });
   });
 
   suite("pluralize", () => {
