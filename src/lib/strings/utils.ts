@@ -34,3 +34,24 @@ export const safeParseJSON = <T = unknown>(value: string) => {
     return undefined;
   }
 };
+
+/**
+ * Simple hash function to convert a string to a number within a specified
+ * range.
+ *
+ * This can be useful to generate a consistent random number from a string.
+ *
+ * @param str - The input string to hash.
+ * @param range - The maximum value of the desired range, exlusive.
+ * @returns A number: [0;range).
+ */
+export const hashStringToNumber = (str: string, range?: number) => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0; // Convert to 32-bit integer.
+  }
+  // Constrains the result to [0, range).
+  if (range) return Math.abs(hash) % range;
+  return Math.abs(hash);
+};

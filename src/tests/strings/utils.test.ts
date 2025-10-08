@@ -1,5 +1,10 @@
 import { expect, it, suite } from "vitest";
-import { isString, pluralize, safeParseJSON } from "~/lib/strings/utils";
+import {
+  hashStringToNumber,
+  isString,
+  pluralize,
+  safeParseJSON,
+} from "~/lib/strings/utils";
 
 suite("strings", () => {
   it("initializes suite correctly", () => {
@@ -42,5 +47,14 @@ suite("strings", () => {
       const result = safeParseJSON<{ foo: string }>('{"foo":"bar"}');
       expect(result).toEqual({ foo: "bar" });
     });
+  });
+});
+
+suite("hashStringToNumber", () => {
+  it("hashes a string to a number", () => {
+    expect(hashStringToNumber("foo")).toEqual(101574);
+  });
+  it("hashes a string to a number with a range", () => {
+    expect(hashStringToNumber("foo", 100)).toEqual(74);
   });
 });
