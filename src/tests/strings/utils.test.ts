@@ -1,5 +1,5 @@
 import { expect, it, suite } from "vitest";
-import { pluralize } from "../../lib/strings/utils";
+import { pluralize } from "~/lib/strings/utils";
 
 suite("strings", () => {
   it("initializes suite correctly", () => {
