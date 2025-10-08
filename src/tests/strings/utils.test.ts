@@ -1,5 +1,5 @@
 import { expect, it, suite } from "vitest";
-import { isString, pluralize } from "~/lib/strings/utils";
+import { isString, pluralize, safeParseJSON } from "~/lib/strings/utils";
 
 suite("strings", () => {
   it("initializes suite correctly", () => {
@@ -25,6 +25,22 @@ suite("strings", () => {
 
     it("pluralizes a word with a custom pattern", () => {
       expect(pluralize(2, "apple", "applesauce")).toEqual("applesauce");
+    });
+  });
+
+  suite("safeParseJSON", () => {
+    it("parses a valid JSON string", () => {
+      expect(safeParseJSON('{"foo":"bar"}')).toEqual({ foo: "bar" });
+    });
+    it("returns undefined for an invalid JSON string", () => {
+      expect(safeParseJSON("invalid")).toEqual(undefined);
+    });
+    it("returns undefined for an empty string", () => {
+      expect(safeParseJSON("")).toEqual(undefined);
+    });
+    it("parses a valid JSON string with type template", () => {
+      const result = safeParseJSON<{ foo: string }>('{"foo":"bar"}');
+      expect(result).toEqual({ foo: "bar" });
     });
   });
 });
