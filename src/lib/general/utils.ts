@@ -69,3 +69,27 @@ export const getValueOrThrow = <T>(
 
   return value;
 };
+
+/**
+ * Randomizes the order of the items in the array.
+ *
+ * This function randomizes the order of the items in the array. It uses the
+ * Fisher-Yates algorithm to shuffle the array The algorithm has a time
+ * complexity of O(n).
+ *
+ * We start from the last element of the array and swap it with a random element
+ * before it. Then we continue this process until we reach the first element of
+ * the array.
+ *
+ * This ensures that every element has an equal chance of being placed at any
+ * position in the array.
+ */
+export const randomize = <T>(items: T[]) => {
+  for (let i = items.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp: T = items[i] as T; // assert items[i] is not undefined
+    items[i] = items[j] as T; // assert items[j] is not undefined
+    items[j] = temp;
+  }
+  return items;
+};
