@@ -1,5 +1,10 @@
 import { expect, it, suite } from "vitest";
-import { getNumberSortFn, isNumber } from "~/lib/numbers/utils";
+import {
+  getNumberSortFn,
+  getRandomFloat,
+  getRandomInt,
+  isNumber,
+} from "~/lib/numbers/utils";
 
 suite("numbers", () => {
   it("initializes suite correctly", () => {
@@ -215,6 +220,156 @@ suite("numbers", () => {
     it("returns false for numeric strings", () => {
       expect(isNumber("123")).toBe(false);
       expect(isNumber("3.14")).toBe(false);
+    });
+  });
+
+  suite("getRandomInt", () => {
+    it("returns an integer within range", () => {
+      const result = getRandomInt(0, 10);
+      expect(Number.isInteger(result)).toBe(true);
+      expect(result).toBeGreaterThanOrEqual(0);
+      expect(result).toBeLessThan(10);
+    });
+
+    it("includes min value", () => {
+      const results: number[] = [];
+      for (let i = 0; i < 100; i++) {
+        results.push(getRandomInt(5, 7));
+      }
+      expect(results).toContain(5);
+    });
+
+    it("excludes max value", () => {
+      const results: number[] = [];
+      for (let i = 0; i < 100; i++) {
+        results.push(getRandomInt(0, 2));
+      }
+      expect(results.every((r) => r < 2)).toBe(true);
+    });
+
+    it("works with negative numbers", () => {
+      const result = getRandomInt(-10, -5);
+      expect(Number.isInteger(result)).toBe(true);
+      expect(result).toBeGreaterThanOrEqual(-10);
+      expect(result).toBeLessThan(-5);
+    });
+
+    it("works with range crossing zero", () => {
+      const result = getRandomInt(-5, 5);
+      expect(Number.isInteger(result)).toBe(true);
+      expect(result).toBeGreaterThanOrEqual(-5);
+      expect(result).toBeLessThan(5);
+    });
+
+    it("works with large ranges", () => {
+      const result = getRandomInt(0, 1000);
+      expect(Number.isInteger(result)).toBe(true);
+      expect(result).toBeGreaterThanOrEqual(0);
+      expect(result).toBeLessThan(1000);
+    });
+
+    it("handles decimal min and max by ceiling min and flooring max", () => {
+      const result = getRandomInt(1.7, 5.9);
+      expect(Number.isInteger(result)).toBe(true);
+      expect(result).toBeGreaterThanOrEqual(2);
+      expect(result).toBeLessThan(5);
+    });
+
+    it("returns different values on multiple calls", () => {
+      const results = new Set<number>();
+      for (let i = 0; i < 50; i++) {
+        results.add(getRandomInt(0, 100));
+      }
+      expect(results.size).toBeGreaterThan(10);
+    });
+
+    it("returns min when range is very small after ceiling and flooring", () => {
+      const results: number[] = [];
+      for (let i = 0; i < 10; i++) {
+        results.push(getRandomInt(1, 2));
+      }
+      expect(results.every((r) => r === 1)).toBe(true);
+    });
+
+    it("works with zero as min", () => {
+      const result = getRandomInt(0, 5);
+      expect(result).toBeGreaterThanOrEqual(0);
+      expect(result).toBeLessThan(5);
+    });
+
+    it("works with zero in the range", () => {
+      const result = getRandomInt(-2, 2);
+      expect(result).toBeGreaterThanOrEqual(-2);
+      expect(result).toBeLessThan(2);
+    });
+  });
+
+  suite("getRandomFloat", () => {
+    it("returns a float within range", () => {
+      const result = getRandomFloat(10, 0);
+      expect(typeof result).toBe("number");
+      expect(result).toBeGreaterThanOrEqual(0);
+      expect(result).toBeLessThan(10);
+    });
+
+    it("can return decimal values", () => {
+      const results: number[] = [];
+      for (let i = 0; i < 10; i++) {
+        results.push(getRandomFloat(10, 0));
+      }
+      const hasDecimal = results.some((r) => !Number.isInteger(r));
+      expect(hasDecimal).toBe(true);
+    });
+
+    it("works with negative numbers", () => {
+      const result = getRandomFloat(-5, -10);
+      expect(result).toBeGreaterThanOrEqual(-10);
+      expect(result).toBeLessThan(-5);
+    });
+
+    it("works with range crossing zero", () => {
+      const result = getRandomFloat(5, -5);
+      expect(result).toBeGreaterThanOrEqual(-5);
+      expect(result).toBeLessThan(5);
+    });
+
+    it("works with decimal min and max", () => {
+      const result = getRandomFloat(5.5, 1.5);
+      expect(result).toBeGreaterThanOrEqual(1.5);
+      expect(result).toBeLessThan(5.5);
+    });
+
+    it("returns different values on multiple calls", () => {
+      const results: number[] = [];
+      for (let i = 0; i < 10; i++) {
+        results.push(getRandomFloat(100, 0));
+      }
+      const uniqueResults = new Set(results);
+      expect(uniqueResults.size).toBeGreaterThan(5);
+    });
+
+    it("works with zero as min", () => {
+      const result = getRandomFloat(10, 0);
+      expect(result).toBeGreaterThanOrEqual(0);
+      expect(result).toBeLessThan(10);
+    });
+
+    it("works with zero in the range", () => {
+      const result = getRandomFloat(5, -5);
+      expect(result).toBeGreaterThanOrEqual(-5);
+      expect(result).toBeLessThan(5);
+    });
+
+    it("works with very small ranges", () => {
+      const result = getRandomFloat(0.2, 0.1);
+      expect(result).toBeGreaterThanOrEqual(0.1);
+      expect(result).toBeLessThan(0.2);
+    });
+
+    it("handles max and min in correct order", () => {
+      const result = getRandomFloat(100, 50);
+      expect(result).toBeGreaterThanOrEqual(50);
+      expect(result).toBeLessThan(100);
     });
   });
 });
