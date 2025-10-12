@@ -25,3 +25,32 @@ export const createUnreachableError = (action: string, message?: string) => {
 export const unreachable = (action: string, message?: string) => {
   throw createUnreachableError(action, message);
 };
+
+/**
+ * Immediately invoked function.
+ *
+ * Can be used for complex inline statements, often decisions.
+ *
+ * @example
+ * ```ts
+ * const foo = iife(() => {
+ *   if (condition) {
+ *     return "bar";
+ *   }
+ *   return "baz";
+ * });
+ * ```
+ *
+ * @example
+ * ```ts
+ * const variant = iife(() => {
+ *   if (status === "accepted") return "constructive";
+ *   if (status === "declined") return "destructive";
+ *   return "default";
+ * });
+ * ```
+ *
+ * @param fn - The function to invoke.
+ * @returns The result of the function.
+ */
+export const iife = <T>(fn: () => T) => fn();
