@@ -55,3 +55,26 @@ export const getNumberSortFn = <T>(
     return unreachable("getNumberSortFn", "direction");
   };
 };
+
+/**
+ * Generates a random integer between two numbers.
+ *
+ * @param min - The minimum value, inclusive.
+ * @param max - The maximum value, exclusive.
+ * @returns A random integer between the two numbers.
+ */
+export const getRandomInt = (min: number, max: number) => {
+  const minToCeil = Math.ceil(min);
+  const maxToFloor = Math.floor(max);
+  return Math.floor(Math.random() * (maxToFloor - minToCeil)) + minToCeil;
+};
+
+/**
+ * Generates a random floating-point number between two numbers.
+ *
+ * @param min - The minimum value, inclusive.
+ * @param max - The maximum value, exclusive.
+ * @returns A random floating-point number between the two numbers.
+ */
+export const getRandomFloat = (max: number, min: number) =>
+  Math.random() * (max - min) + min;
