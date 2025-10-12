@@ -1,6 +1,12 @@
 import { unreachable } from "~/lib/general/utils";
 
 /**
+ * Checks if a value is a number.
+ */
+export const isNumber = (value: unknown): value is number =>
+  typeof value === "number" && !Number.isNaN(value);
+
+/**
  * Creates a comparison function for sorting objects by a number property in
  * ascending or descending order.
  *
