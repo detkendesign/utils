@@ -3,6 +3,7 @@ import {
   getNumberSortFn,
   getRandomFloat,
   getRandomInt,
+  getWeightedRandom,
   isNumber,
 } from "~/lib/numbers/utils";
 
@@ -370,6 +371,187 @@ suite("numbers", () => {
       const result = getRandomFloat(100, 50);
       expect(result).toBeGreaterThanOrEqual(50);
       expect(result).toBeLessThan(100);
+    });
+  });
+
+  suite("getWeightedRandom", () => {
+    it("returns one of the provided values", () => {
+      const options = [
+        ["a", 1],
+        ["b", 1],
+        ["c", 1],
+      ] as const;
+      const result = getWeightedRandom(options);
+      expect(["a", "b", "c"]).toContain(result);
+    });
+
+    it("works with single option", () => {
+      const options = [["only", 1]] as const;
+      const result = getWeightedRandom(options);
+      expect(result).toBe("only");
+    });
+
+    it("favors higher weighted options", () => {
+      const options = [
+        ["rare", 1],
+        ["common", 99],
+      ] as const;
+      const results: string[] = [];
+
+      for (let i = 0; i < 100; i++) {
+        results.push(getWeightedRandom(options));
+      }
+
+      const commonCount = results.filter((r) => r === "common").length;
+      expect(commonCount).toBeGreaterThan(80);
+    });
+
+    it("works with equal weights", () => {
+      const options = [
+        ["a", 1],
+        ["b", 1],
+        ["c", 1],
+      ] as const;
+      const results: string[] = [];
+
+      for (let i = 0; i < 90; i++) {
+        results.push(getWeightedRandom(options));
+      }
+
+      const uniqueResults = new Set(results);
+      expect(uniqueResults.size).toBeGreaterThan(1);
+    });
+
+    it("works with different weight ratios", () => {
+      const options = [
+        ["low", 1],
+        ["medium", 5],
+        ["high", 10],
+      ] as const;
+      const results: string[] = [];
+
+      for (let i = 0; i < 160; i++) {
+        results.push(getWeightedRandom(options));
+      }
+
+      const highCount = results.filter((r) => r === "high").length;
+      const mediumCount = results.filter((r) => r === "medium").length;
+      const lowCount = results.filter((r) => r === "low").length;
+
+      expect(highCount).toBeGreaterThan(mediumCount);
+      expect(mediumCount).toBeGreaterThan(lowCount);
+    });
+
+    it("works with number values", () => {
+      const options = [
+        [1, 10],
+        [2, 20],
+        [3, 30],
+      ] as const;
+      const result = getWeightedRandom(options);
+      expect([1, 2, 3]).toContain(result);
+    });
+
+    it("works with object values", () => {
+      const obj1 = { id: 1, name: "first" };
+      const obj2 = { id: 2, name: "second" };
+      const options = [
+        [obj1, 1],
+        [obj2, 1],
+      ] as const;
+      const result = getWeightedRandom(options);
+      expect([obj1, obj2]).toContain(result);
+    });
+
+    it("works with very unbalanced weights", () => {
+      const options = [
+        ["rare", 1],
+        ["common", 1000],
+      ] as const;
+      const results: string[] = [];
+
+      for (let i = 0; i < 100; i++) {
+        results.push(getWeightedRandom(options));
+      }
+
+      const commonCount = results.filter((r) => r === "common").length;
+      expect(commonCount).toBeGreaterThan(95);
+    });
+
+    it("works with decimal weights", () => {
+      const options = [
+        ["a", 0.5],
+        ["b", 0.3],
+        ["c", 0.2],
+      ] as const;
+      const result = getWeightedRandom(options);
+      expect(["a", "b", "c"]).toContain(result);
+    });
+
+    it("handles large number of options", () => {
+      const options = Array.from({ length: 100 }, (_, i) => [
+        `option${i}`,
+        1,
+      ]) as [string, number][];
+      const result = getWeightedRandom(options);
+      expect(result).toMatch(/^option\d+$/);
+    });
+
+    it("returns first option when all weights are zero", () => {
+      const options = [
+        ["first", 0],
+        ["second", 0],
+      ] as const;
+      const result = getWeightedRandom(options);
+      expect(result).toBe("first");
+    });
+
+    it("handles mix of zero and positive weights", () => {
+      const options = [
+        ["zero", 0],
+        ["positive", 10],
+      ] as const;
+      const results: string[] = [];
+
+      for (let i = 0; i < 50; i++) {
+        results.push(getWeightedRandom(options));
+      }
+
+      expect(results.every((r) => r === "positive")).toBe(true);
+    });
+
+    it("throws when no options provided", () => {
+      const options: [string, number][] = [];
+      expect(() => getWeightedRandom(options)).toThrow();
+    });
+
+    it("preserves reference identity", () => {
+      const obj = { id: 1 };
+      const options = [[obj, 1]] as const;
+      const result = getWeightedRandom(options);
+      expect(result).toBe(obj);
+    });
+
+    it("works with boolean values", () => {
+      const options = [
+        [true, 1],
+        [false, 1],
+      ] as const;
+      const result = getWeightedRandom(options);
+      expect(typeof result).toBe("boolean");
+    });
+
+    it("returns consistent types", () => {
+      const options = [
+        ["a", 1],
+        ["b", 1],
+        ["c", 1],
+      ] as const;
+
+      for (let i = 0; i < 20; i++) {
+        const result = getWeightedRandom(options);
+        expect(typeof result).toBe("string");
+      }
     });
   });
 });
