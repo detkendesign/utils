@@ -78,3 +78,35 @@ export const getRandomInt = (min: number, max: number) => {
  */
 export const getRandomFloat = (max: number, min: number) =>
   Math.random() * (max - min) + min;
+
+/**
+ * Returns a random value based on weighted probabilities.
+ *
+ * @param options - A non-empty array of tuples where each tuple contains [value, weight].
+ * Weights should sum to 1.0 for percentages, but any positive numbers work as relative weights.
+ *
+ * @example
+ * // 70% chance of 2, 30% chance of 1.
+ * getWeightedRandom([[1, 0.3], [2, 0.7]])
+ *
+ * @example
+ * // Using relative weights (3:2:1 ratio).
+ * getWeightedRandom([["a", 3], ["b", 2], ["c", 1]])
+ */
+export const getWeightedRandom = <T>(
+  options: readonly (readonly [T, number])[]
+): T => {
+  const totalWeight = options.reduce((sum, [_, weight]) => sum + weight, 0);
+  const random = Math.random() * totalWeight;
+
+  let cumulativeWeight = 0;
+  for (const [value, weight] of options) {
+    cumulativeWeight += weight;
+    if (random < cumulativeWeight) return value;
+  }
+
+  // Fallback: Should only be reached with zero/negative weights.
+  return (
+    options[0]?.[0] || unreachable("getWeightedRandom", "No options provided")
+  );
+};
