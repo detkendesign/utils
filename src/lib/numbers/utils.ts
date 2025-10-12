@@ -110,3 +110,13 @@ export const getWeightedRandom = <T>(
     options[0]?.[0] || unreachable("getWeightedRandom", "No options provided")
   );
 };
+
+/**
+ * Returns a random item from an array.
+ *
+ * @param options - A non-empty array of items.
+ * @returns A random item from the array.
+ */
+export const getRandomItem = <T>(options: readonly T[]) => {
+  return options[getRandomInt(0, options.length)];
+};
