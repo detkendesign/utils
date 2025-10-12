@@ -27,3 +27,13 @@ export type StringToTypeMap<T> = { [key in string]: T };
  *        ^ { b: string }
  */
 export type TOmit<T, K extends keyof T> = Omit<T, K>;
+
+/**
+ * Non-empty array.
+ *
+ * @example
+ * const foo: NonEmptyArray<number> = ...;
+ * foo[0];
+ *   ^ number, always defined
+ */
+export type NonEmptyArray<T> = [T, ...T[]];
