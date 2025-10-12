@@ -54,3 +54,18 @@ export const unreachable = (action: string, message?: string) => {
  * @returns The result of the function.
  */
 export const iife = <T>(fn: () => T) => fn();
+
+/**
+ * Assures a value's existence, throwing an error if it is undefined.
+ *
+ * @returns The value, excluding undefined variants.
+ */
+export const getValueOrThrow = <T>(
+  value?: T | undefined | null,
+  message?: string,
+  error = Error(message ?? "getValueOrThrow")
+) => {
+  if (value === undefined || value === null) throw error;
+
+  return value;
+};
