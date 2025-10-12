@@ -1,5 +1,10 @@
 import { expect, it, suite } from "vitest";
-import { createUnreachableError, iife, unreachable } from "~/lib/general/utils";
+import {
+  createUnreachableError,
+  getValueOrThrow,
+  iife,
+  unreachable,
+} from "~/lib/general/utils";
 
 suite("general utils", () => {
   it("initializes suite correctly", () => {
@@ -86,6 +91,77 @@ suite("general utils", () => {
         return "baz";
       });
       expect(result).toBe("bar");
+    });
+  });
+
+  suite("getValueOrThrow", () => {
+    it("returns value when it is defined", () => {
+      const result = getValueOrThrow("hello");
+      expect(result).toBe("hello");
+    });
+
+    it("returns value when it is a number", () => {
+      const result = getValueOrThrow(42);
+      expect(result).toBe(42);
+    });
+
+    it("returns value when it is an object", () => {
+      const obj = { foo: "bar" };
+      const result = getValueOrThrow(obj);
+      expect(result).toEqual(obj);
+    });
+
+    it("returns 0 without throwing", () => {
+      const result = getValueOrThrow(0);
+      expect(result).toBe(0);
+    });
+
+    it("returns false without throwing", () => {
+      const result = getValueOrThrow(false);
+      expect(result).toBe(false);
+    });
+
+    it("returns empty string without throwing", () => {
+      const result = getValueOrThrow("");
+      expect(result).toBe("");
+    });
+
+    it("throws when value is undefined with default message", () => {
+      expect(() => getValueOrThrow(undefined)).toThrow("getValueOrThrow");
+    });
+
+    it("throws when value is null with default message", () => {
+      expect(() => getValueOrThrow(null)).toThrow("getValueOrThrow");
+    });
+
+    it("throws with custom message when value is undefined", () => {
+      expect(() => getValueOrThrow(undefined, "Custom error")).toThrow(
+        "Custom error"
+      );
+    });
+
+    it("throws with custom message when value is null", () => {
+      expect(() => getValueOrThrow(null, "Value is required")).toThrow(
+        "Value is required"
+      );
+    });
+
+    it("throws custom error instance", () => {
+      const customError = new TypeError("Type mismatch");
+      expect(() => getValueOrThrow(undefined, "ignored", customError)).toThrow(
+        TypeError
+      );
+      expect(() => getValueOrThrow(undefined, "ignored", customError)).toThrow(
+        "Type mismatch"
+      );
+    });
+
+    it("throws Error instance", () => {
+      try {
+        getValueOrThrow(undefined);
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error);
+      }
     });
   });
 });
